@@ -4,8 +4,19 @@ expenses = []
 
 
 def add_expense():
+    while True:
+        try:
+            amount = float(input("Enter your expense amount: "))
 
-    amount = float(input("Enter amount to add: "))
+            if amount < 0:
+                print("Amount cannot be negative. Try again")
+            else:
+                break
+
+        except ValueError:
+            print("Invalid input. Try again")
+
+
     category = input("Enter category to add: ").lower()
     note = input("Enter a short note to add: ")
     expense = {"amount": amount, "category": category, "note": note}
@@ -41,16 +52,25 @@ def delete_expense():
         print("No expenses added")
     else:
         view_expenses()
-        number = int(input("Enter the expense number to delete: "))
-        if number >= 1 and number <= len(expenses):
+        while True:
+            try:
+                number = int(input("Enter the expense number to delete: "))
+
+                if number < 1 or number > len(expenses):
+                    print("Invalid input. Try again")
+                else:
+                    break
+
+            except ValueError:
+                print("Invalid input. Try again")
+
+
+        confirm = input("Are you sure you want to delete the expense? (y/n): ").lower()
+        if confirm == "y":
             del expenses[number - 1]
             print(f" Expense {number} has been deleted")
         else:
-            print("Invalid choice. Try again")
-
-
-
-
+            print("Deletion cancelled")
 
 
 
@@ -63,7 +83,16 @@ while True:
     print("4. Delete expense")
     print("5. Exit")
 
-    choice = int(input("Enter your choice: "))
+    try:
+        choice = int(input("Enter your choice: "))
+        if choice < 1 or choice > 5:
+            print("Invalid input. Try again")
+            continue
+
+    except ValueError:
+        print("Invalid input. Try again")
+        continue
+
     if choice == 1:
         add_expense()
     elif choice == 2:
