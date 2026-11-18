@@ -8,19 +8,27 @@ def add_expense():
         try:
             amount = float(input("Enter your expense amount: "))
 
-            if amount < 0:
-                print("Amount cannot be negative. Try again")
+            if amount <= 0:
+                print("Amount must be greater than zero. Try again")
             else:
                 break
 
         except ValueError:
             print("Invalid input. Try again")
 
+    category = input("Enter your expense category: ").title().strip()
+    while not category:
+        print("Category cannot be empty. Try again.")
+        category = input("Enter your expense category: ").title().strip()
 
-    category = input("Enter category to add: ").lower()
-    note = input("Enter a short note to add: ")
+    note = input("Enter a short note to add: ").strip()
+    while not note:
+        print("Note cannot be empty. Try again.")
+        note = input("Enter a short note to add: ").strip()
+
     expense = {"amount": amount, "category": category, "note": note}
     expenses.append(expense)
+    print("Expense added successfully!")
 
 
 
@@ -34,6 +42,8 @@ def view_expenses():
             print(f"Amount: ${expense['amount']:.2f}")
             print(f"Category: {expense['category'].title()}")
             print(f"Note: {expense['note'].title()}")
+
+    print(f"Total expenses added: {len(expenses)}")
 
 
 
@@ -72,6 +82,84 @@ def delete_expense():
         else:
             print("Deletion cancelled")
 
+def average_expense():
+    if not expenses:
+        print("No expenses added")
+    else:
+        total = 0
+        for expense in expenses:
+            total += expense["amount"]
+        count = len(expenses)
+        average = total / count
+        print(f"Average expense: ${average:.2f}")
+
+def edit_expense():
+    if not expenses:
+        print("No expenses added")
+    else:
+        view_expenses()
+
+        while True:
+            try:
+                number = int(input("which expense would you like to edit? "))
+                if number < 1 or number > len(expenses):
+                    print("Invalid input. Try again")
+                else:
+                    break
+            except ValueError:
+                print("Invalid input. Try again")
+
+        expense = expenses[number - 1]
+        edit_type = input("What do you want to edit? (amount/category/note): ").lower().strip()
+        if edit_type == "amount":
+            while True:
+                try:
+                    amount = float(input("Enter your new expense amount: "))
+                    if amount <= 0:
+                        print("Amount must be greater than zero. Try again")
+                    else:
+                        expense["amount"] = amount
+                        break
+                except ValueError:
+                    print("Invalid input. Try again")
+
+
+
+        elif edit_type == "category":
+            category = input("Enter your new expense category: ").title().strip()
+
+            while not category:
+                print("Category cannot be empty. Try again")
+                category = input("Enter your new expense category: ").title().strip()
+
+            expense["category"] = category
+
+        elif edit_type == "note":
+            note = input("Enter your new expense note: ").strip()
+
+            while not note:
+                print("Note cannot be empty. Try again")
+                note = input("Enter your new expense note: ").strip()
+            expense["note"] = note
+
+    print("Expense updated successfully!")
+
+def search_expense():
+    if not expenses:
+        print("No expenses added")
+    else:
+        expense_category = input("Enter your expense category: ").strip().lower()
+        found = False
+        for expense in expenses:
+            if expense["category"].lower() == expense_category:
+                print(expense)
+                found = True
+        if not found:
+            print("No matching expenses found")
+
+
+
+
 
 
 print("Welcome to the expense tracker! ")
@@ -81,11 +169,14 @@ while True:
     print("2. View expenses")
     print("3. Total expenses")
     print("4. Delete expense")
-    print("5. Exit")
+    print("5. average expense")
+    print("6. Edit expense")
+    print("7. Search expense")
+    print("8. Exit")
 
     try:
         choice = int(input("Enter your choice: "))
-        if choice < 1 or choice > 5:
+        if choice < 1 or choice > 8:
             print("Invalid input. Try again")
             continue
 
@@ -102,6 +193,12 @@ while True:
     elif choice == 4:
         delete_expense()
     elif choice == 5:
+        average_expense()
+    elif choice == 6:
+        edit_expense()
+    elif choice == 7:
+        search_expense()
+    elif choice == 8:
         print("Thank you for using expense tracker")
         break
     else:
